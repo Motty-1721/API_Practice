@@ -51,9 +51,7 @@ async function fetchNews(category = 'general') {
             const errorDiv = document.createElement('div');
             errorDiv.style.cssText = 'background: #ef4444; color: white; padding: 1rem; border-radius: 8px; margin-top: 1rem; text-align: center;';
             errorDiv.innerHTML = `
-                <strong>⚠️ API Note:</strong> Using demo data. For real live news, get a free API key from 
-                <a href="https://newsapi.org/register" target="_blank" style="color: white; text-decoration: underline; font-weight: bold;">NewsAPI.org</a>
-                and replace the API key in news.js
+                <strong>⚠️ API Note:</strong> Using demo data only. I need to upgrade my NewsAPI plan to provide live news.
             `;
             placeholder.appendChild(errorDiv);
         }, 100);
