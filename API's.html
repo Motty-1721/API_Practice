@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API Integration Hub</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="weather.css" />
+
+  </head>
+  <body>
+    <div class="nav-wrapper">
+      <nav>
+        <div class="logo" onclick="navigateTo('home')">⚡ API Hub</div>
+        <ul class="nav-links" id="navLinks">
+          <li>
+            <a
+              href="#"
+              onclick="navigateTo('home')"
+              class="active"
+              data-page="home"
+              >Home</a
+            >
+          </li>
+          <li>
+            <a href="#" onclick="navigateTo('weather')" data-page="weather"
+              >Weather</a
+            >
+          </li>
+          <li>
+            <a href="#" onclick="navigateTo('news')" data-page="news">News</a>
+          </li>
+          <li>
+            <a href="#" onclick="navigateTo('finance')" data-page="finance"
+              >Finance</a
+            >
+          </li>
+          <li>
+            <a href="#" onclick="navigateTo('movies')" data-page="movies"
+              >Movies</a
+            >
+          </li>
+        </ul>
+        <div class="hamburger" onclick="toggleMenu()">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </nav>
+    </div>
+
+    <main id="mainContent">
+      <!-- HOME PAGE -->
+      <div id="home" class="page">
+        <div class="hero">
+          <h1>Welcome to API Integration Hub</h1>
+          <p>
+            Your centralized platform for accessing multiple public APIs in one
+            place
+          </p>
+        </div>
+
+        <div class="cards-grid">
+          <div
+            class="card"
+            onclick="navigateTo('weather')"
+            style="animation-delay: 0.1s"
+          >
+            <div class="card-icon">🌤️</div>
+            <h3>Weather Service</h3>
+            <p>
+              Get real-time weather data, forecasts, and climate information for
+              any location worldwide.
+            </p>
+            <span class="card-tag">Ready for API</span>
+          </div>
+
+          <div
+            class="card"
+            onclick="navigateTo('news')"
+            style="animation-delay: 0.2s"
+          >
+            <div class="card-icon">📰</div>
+            <h3>News Aggregator</h3>
+            <p>
+              Access breaking news, headlines, and articles from trusted sources
+              across the globe.
+            </p>
+            <span class="card-tag">Ready for API</span>
+          </div>
+
+          <div
+            class="card"
+            onclick="navigateTo('finance')"
+            style="animation-delay: 0.3s"
+          >
+            <div class="card-icon">💰</div>
+            <h3>Crypto Tracker</h3>
+            <p>
+              Track stock prices, cryptocurrency values, and financial market
+              data in real-time.
+            </p>
+            <span class="card-tag">Ready for API</span>
+          </div>
+
+          <div
+            class="card"
+            onclick="navigateTo('movies')"
+            style="animation-delay: 0.4s"
+          >
+            <div class="card-icon">🎬</div>
+            <h3>Movie Database</h3>
+            <p>
+              Explore movies, TV shows, ratings, reviews, and detailed
+              entertainment information.
+            </p>
+            <span class="card-tag">Ready for API</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- WEATHER PAGE -->
+      <div id="weather" class="page hidden">
+        <div class="content-section">
+          <div class="page-header">
+            <h1>Weather Service</h1>
+            <p>Real-time weather data and forecasts</p>
+          </div>
+
+          <div class="weather-search">
+            <input
+              type="text"
+              id="cityInput"
+              placeholder="Enter city name (e.g., Manila, Tokyo, London)"
+              onkeypress="if(event.key === 'Enter') fetchWeather()"
+            />
+            <button onclick="fetchWeather()">Search</button>
+          </div>
+
+          <div class="api-placeholder">
+            <div class="api-placeholder-icon">🌤️</div>
+            <h3>Weather API Integration Placeholder</h3>
+            <p>
+              This section will display live weather data including temperature,
+              humidity, wind speed, and 5-day forecasts.
+            </p>
+          </div>
+
+          <div class="feature-grid">
+            <div class="feature-card">
+              <h4>Current Weather</h4>
+              <p>Live temperature and conditions</p>
+            </div>
+            <div class="feature-card">
+              <h4>5-Day Forecast</h4>
+              <p>Extended weather predictions</p>
+            </div>
+            <div class="feature-card">
+              <h4>Location Search</h4>
+              <p>Search weather by city or coordinates</p>
+            </div>
+            <div class="feature-card">
+              <h4>Weather Alerts</h4>
+              <p>Severe weather notifications</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEWS PAGE -->
+      <div id="news" class="page hidden">
+        <div class="content-section">
+          <div class="page-header">
+            <h1>News Aggregator</h1>
+            <p>Latest headlines from around the world</p>
+          </div>
+
+          <div class="api-placeholder">
+            <div class="api-placeholder-icon">📰</div>
+            <h3>News API Integration Placeholder</h3>
+            <p>
+              This section will display breaking news, top headlines, and
+              articles from various categories and sources.
+            </p>
+          </div>
+
+          <div class="feature-grid">
+            <div class="feature-card">
+              <h4>Top Headlines</h4>
+              <p>Breaking news from major outlets</p>
+            </div>
+            <div class="feature-card">
+              <h4>Category Filter</h4>
+              <p>Technology, sports, business, and more</p>
+            </div>
+            <div class="feature-card">
+              <h4>Source Selection</h4>
+              <p>Choose your preferred news sources</p>
+            </div>
+            <div class="feature-card">
+              <h4>Search Articles</h4>
+              <p>Find news on specific topics</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FINANCE PAGE -->
+      <div id="finance" class="page hidden">
+        <div class="content-section">
+          <div class="page-header">
+            <h1>Crypto Tracker</h1>
+            <p>Stock prices and market data</p>
+          </div>
+
+          <div class="api-placeholder">
+            <div class="api-placeholder-icon">💰</div>
+            <h3>Finance API Integration Placeholder</h3>
+            <p>
+              This section will display real-time stock prices, cryptocurrency
+              values, market trends, and financial charts.
+            </p>
+          </div>
+
+          <div class="feature-grid">
+            <div class="feature-card">
+              <h4>Stock Quotes</h4>
+              <p>Real-time stock market data</p>
+            </div>
+            <div class="feature-card">
+              <h4>Cryptocurrency</h4>
+              <p>Live crypto prices and trends</p>
+            </div>
+            <div class="feature-card">
+              <h4>Market Charts</h4>
+              <p>Interactive financial visualizations</p>
+            </div>
+            <div class="feature-card">
+              <h4>Portfolio Tracking</h4>
+              <p>Monitor your investments</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MOVIES PAGE -->
+      <div id="movies" class="page hidden">
+        <div class="content-section">
+          <div class="page-header">
+            <h1>Movie Database</h1>
+            <p>Explore movies and TV shows</p>
+          </div>
+
+          <div class="api-placeholder">
+            <div class="api-placeholder-icon">🎬</div>
+            <h3>Movie API Integration Placeholder</h3>
+            <p>
+              This section will display movie information, ratings, cast
+              details, trailers, and recommendations.
+            </p>
+          </div>
+
+          <div class="feature-grid">
+            <div class="feature-card">
+              <h4>Movie Search</h4>
+              <p>Find any movie or TV show</p>
+            </div>
+            <div class="feature-card">
+              <h4>Ratings & Reviews</h4>
+              <p>IMDB scores and user reviews</p>
+            </div>
+            <div class="feature-card">
+              <h4>Cast & Crew</h4>
+              <p>Detailed cast information</p>
+            </div>
+            <div class="feature-card">
+              <h4>Trending Now</h4>
+              <p>Popular movies and shows</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>
+        &copy; 2025 API Integration Hub. Built for API integration practice.
+      </p>
+    </footer>
+    <script src="api.js"></script>
+    <script src="weather.js"></script>
+    <script src="news.js"></script>
+    <script src="crypto.js"></script>
+    <script src="movies.js"></script>
+  </body>
+</html>

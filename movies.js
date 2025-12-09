@@ -1,7 +1,12 @@
 // TMDB API - REQUIRES API KEY
-const TMDB_API_KEY = 'd79c48c48a52c1211e651b8f70d72753'; // Replace with your actual API key
+const TMDB_API_KEY = 'd79c48c48a52c1211e651b8f70d72753'; // Your TMDB API key
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
+
+// Make functions globally accessible
+window.fetchMovies = fetchMovies;
+window.searchMovie = searchMovie;
+window.getMovieDetails = getMovieDetails;
 
 async function fetchMovies(category = 'popular') {
     const placeholder = document.querySelector('#movies .api-placeholder');
@@ -14,7 +19,7 @@ async function fetchMovies(category = 'popular') {
     `;
 
     // Check if API key is set
-    if (TMDB_API_KEY === 'd79c48c48a52c1211e651b8f70d72753') {
+    if (TMDB_API_KEY === 'YOUR_TMDB_API_KEY_HERE') {
         placeholder.innerHTML = `
             <div style="text-align: center; padding: 3rem;">
                 <div style="font-size: 4rem; margin-bottom: 1rem;">🔑</div>
@@ -24,7 +29,7 @@ async function fetchMovies(category = 'popular') {
                     <li>Visit <a href="https://www.themoviedb.org/signup" target="_blank" style="color: #6366f1;">TMDB.org</a> and create a free account</li>
                     <li>Go to Settings → API and request an API key</li>
                     <li>Copy your API key</li>
-                    <li>Replace 'YOUR_TMDB_API_KEY_HERE' in movies.js with your actual key</li>
+                    <li>Replace 'YOUR_TMDB_API_KEY_HERE' in the code with your actual key</li>
                 </ol>
                 <a href="https://www.themoviedb.org/settings/api" target="_blank" style="display: inline-block; margin-top: 1rem; padding: 0.75rem 1.5rem; background: #6366f1; color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">Get Your Free API Key</a>
             </div>
@@ -34,6 +39,11 @@ async function fetchMovies(category = 'popular') {
 
     try {
         const response = await fetch(`${TMDB_BASE_URL}/movie/${category}?api_key=${TMDB_API_KEY}&language=en-US&page=1`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const data = await response.json();
         
         placeholder.innerHTML = `
@@ -41,14 +51,14 @@ async function fetchMovies(category = 'popular') {
                 <div style="margin-bottom: 2rem;">
                     <h2 style="margin-bottom: 1rem;">${getCategoryTitle(category)}</h2>
                     <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-                        <input type="text" id="movieSearch" placeholder="Search for a movie..." style="flex: 1; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem;" onkeypress="if(event.key === 'Enter') searchMovie(document.getElementById('movieSearch').value)">
-                        <button onclick="searchMovie(document.getElementById('movieSearch').value)" style="padding: 0.75rem 1.5rem; background: #6366f1; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">🔍 Search</button>
+                        <input type="text" id="movieSearch" placeholder="Search for a movie..." style="flex: 1; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem;" onkeypress="if(event.key === 'Enter') window.searchMovie(document.getElementById('movieSearch').value)">
+                        <button onclick="window.searchMovie(document.getElementById('movieSearch').value)" style="padding: 0.75rem 1.5rem; background: #6366f1; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">🔍 Search</button>
                     </div>
                 </div>
                 
                 <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap;">
                     ${['popular', 'top_rated', 'upcoming', 'now_playing'].map(cat => `
-                        <button onclick="fetchMovies('${cat}')" style="padding: 0.75rem 1.5rem; background: ${category === cat ? '#6366f1' : 'white'}; color: ${category === cat ? 'white' : '#4b5563'}; border: 2px solid ${category === cat ? '#6366f1' : '#e5e7eb'}; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                        <button onclick="window.fetchMovies('${cat}')" style="padding: 0.75rem 1.5rem; background: ${category === cat ? '#6366f1' : 'white'}; color: ${category === cat ? 'white' : '#4b5563'}; border: 2px solid ${category === cat ? '#6366f1' : '#e5e7eb'}; border-radius: 8px; cursor: pointer; font-weight: 600;">
                             ${getCategoryTitle(cat)}
                         </button>
                     `).join('')}
@@ -56,7 +66,7 @@ async function fetchMovies(category = 'popular') {
                 
                 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
                     ${data.results.slice(0, 12).map(movie => `
-                        <div onclick="getMovieDetails(${movie.id})" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.3s ease;">
+                        <div onclick="window.getMovieDetails(${movie.id})" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.3s ease;">
                             <img src="${movie.poster_path ? TMDB_IMAGE_BASE + movie.poster_path : 'https://via.placeholder.com/500x750?text=No+Image'}" alt="${movie.title}" style="width: 100%; height: 300px; object-fit: cover;">
                             <div style="padding: 1rem;">
                                 <h3 style="font-size: 1rem; margin-bottom: 0.5rem; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">${movie.title}</h3>
@@ -79,11 +89,13 @@ async function fetchMovies(category = 'popular') {
         `;
         
     } catch (error) {
+        console.error('Fetch error:', error);
         placeholder.innerHTML = `
-            <div style="text-align: center; color: #ef4444;">
+            <div style="text-align: center; color: #ef4444; padding: 2rem;">
                 <div style="font-size: 3rem; margin-bottom: 1rem;">❌</div>
                 <h3>Error Loading Movies</h3>
-                <p>Could not fetch movie data. Please check your API key.</p>
+                <p>Could not fetch movie data. Please check your API key and internet connection.</p>
+                <p style="font-size: 0.875rem; color: #6b7280; margin-top: 1rem;">Error: ${error.message}</p>
             </div>
         `;
     }
@@ -100,19 +112,33 @@ async function searchMovie(query) {
     
     try {
         const response = await fetch(`${TMDB_BASE_URL}/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const data = await response.json();
         
         if (data.results.length === 0) {
-            placeholder.innerHTML = `<div style="text-align: center;"><h3>No movies found for "${query}"</h3></div>`;
+            placeholder.innerHTML = `
+                <div style="text-align: center; padding: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+                    <h3>No movies found for "${query}"</h3>
+                    <button onclick="window.fetchMovies('popular')" style="margin-top: 1rem; padding: 0.75rem 1.5rem; background: #6366f1; color: white; border: none; border-radius: 8px; cursor: pointer;">Back to Popular Movies</button>
+                </div>
+            `;
             return;
         }
         
         placeholder.innerHTML = `
             <div style="max-width: 1400px; margin: 0 auto;">
-                <h2 style="margin-bottom: 2rem;">Search Results for "${query}"</h2>
+                <div style="margin-bottom: 2rem;">
+                    <h2>Search Results for "${query}"</h2>
+                    <button onclick="window.fetchMovies('popular')" style="margin-top: 1rem; padding: 0.5rem 1rem; background: white; color: #4b5563; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer;">← Back to Browse</button>
+                </div>
                 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem;">
                     ${data.results.slice(0, 12).map(movie => `
-                        <div onclick="getMovieDetails(${movie.id})" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); cursor: pointer;">
+                        <div onclick="window.getMovieDetails(${movie.id})" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); cursor: pointer;">
                             <img src="${movie.poster_path ? TMDB_IMAGE_BASE + movie.poster_path : 'https://via.placeholder.com/500x750?text=No+Image'}" alt="${movie.title}" style="width: 100%; height: 300px; object-fit: cover;">
                             <div style="padding: 1rem;">
                                 <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">${movie.title}</h3>
@@ -127,13 +153,24 @@ async function searchMovie(query) {
             </div>
         `;
     } catch (error) {
-        placeholder.innerHTML = `<div style="text-align: center; color: #ef4444;"><h3>Search failed</h3></div>`;
+        console.error('Search error:', error);
+        placeholder.innerHTML = `
+            <div style="text-align: center; color: #ef4444; padding: 2rem;">
+                <h3>Search failed</h3>
+                <p>${error.message}</p>
+            </div>
+        `;
     }
 }
 
 async function getMovieDetails(movieId) {
     try {
         const response = await fetch(`${TMDB_BASE_URL}/movie/${movieId}?api_key=${TMDB_API_KEY}&append_to_response=credits,videos`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const movie = await response.json();
         
         const cast = movie.credits?.cast?.slice(0, 5).map(actor => actor.name).join(', ') || 'N/A';
@@ -176,6 +213,7 @@ async function getMovieDetails(movieId) {
         document.body.appendChild(modal);
     } catch (error) {
         console.error('Error fetching movie details:', error);
+        alert('Failed to load movie details. Please try again.');
     }
 }
 
@@ -187,4 +225,9 @@ function getCategoryTitle(category) {
         'now_playing': '🎬 Now Playing'
     };
     return titles[category] || 'Movies';
+}
+
+// Initialize on load if element exists
+if (document.querySelector('#movies .api-placeholder')) {
+    fetchMovies('popular');
 }
